@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: lo_psql
+    tty: true
+    ports:
+      - 127.0.0.1:5442:5432
+    volumes:
+      - /dbs/postgresql:/var/lib/postgresql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lo001
+  backend:
+    image: lo_backend
+    container_name: lo_backend
+    tty: true
+
