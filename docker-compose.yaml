@@ -4,11 +4,11 @@ services:
   psql:
     image: postgres:15
     container_name: lf_psql
-    tty: true
+    network_mode: bridge
     ports:
       - 127.0.0.1:5442:5432
     volumes:
-      - /dbs/postgresql:/var/lib/postgresql
+      - /dbs/lf_psql:/var/lib/postgresql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -16,5 +16,9 @@ services:
   server:
     image: lf_server
     container_name: lf_server
+    network_mode: bridge
+    volumes:
+    - ./server:/lf_server
     tty: true
-
+    depends_on:
+      - psql
