@@ -1,10 +1,7 @@
 FROM python:3.11.3
 
-WORKDIR /lf_server
+WORKDIR /lf_api
 
-COPY ./requirements.txt requirements.txt
+COPY ./lf_api /lf_api
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
-
-COPY . /lf_server
-
