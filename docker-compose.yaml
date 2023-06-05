@@ -10,9 +10,9 @@ services:
     volumes:
       - /dbs/lf_psql:/var/lib/postgresql
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: lf000
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
   lf_api:
     image: lf_api
     container_name: lf_api
@@ -20,8 +20,14 @@ services:
     volumes:
     - ./lf_api:/lf_api
     tty: true
+    environment:
+      DB_TYPE: ${DB_TYPE}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_TABLE: ${DB_TABLE}
+      DB_HOST: "lf_psql"
     ports:
       - 8000:8000
-    depends_on:
+    links:
       - lf_psql
     command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
