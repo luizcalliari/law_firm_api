@@ -1,8 +1,7 @@
 import os
 
-from sqlalchemy import create_async_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 DB_TYPE = os.environ.get("DB_TYPE")
 DB_LOGIN = os.environ.get("DB_USER")
