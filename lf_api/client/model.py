@@ -16,3 +16,10 @@ class Client(DbBase):
     cpf = Column(String, unique=True)
     cnpj = Column(String, unique=True)
     status_id = Column(Integer, default=1, nullable=False)
+
+
+class ClientStatus(DbBase):
+    __tablename__ = "client_status"
+
+    id = Column(Integer, primary_key=True, index=True, nullable=False)
+    description = Column(String, unique=True, nullable=False)
