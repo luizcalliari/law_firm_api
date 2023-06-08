@@ -7,7 +7,8 @@ from lf_api.config.database import DbBase
 class Client(DbBase):
     __tablename__ = "client"
 
-    id = Column(Integer, primary_key=True, index=True, nullable=False)
+    seq = DbBase.Sequence('client_id_seq')
+    id = Column(Integer, seq, server_default=seq.next_value(), primary_key=True, index=True, nullable=False)
     name = Column(String, unique=True, nullable=False)
     addresses = Column(ARRAY(String))
     phone = Column(ARRAY(String))
@@ -21,5 +22,6 @@ class Client(DbBase):
 class ClientStatus(DbBase):
     __tablename__ = "client_status"
 
-    id = Column(Integer, primary_key=True, index=True, nullable=False)
+    seq = DbBase.Sequence('client_id_seq')
+    id = Column(Integer, seq, server_default=seq.next_value(), primary_key=True, index=True, nullable=False)
     description = Column(String, unique=True, nullable=False)
