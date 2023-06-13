@@ -17,3 +17,12 @@ engine = create_async_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 DbBase = declarative_base()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
