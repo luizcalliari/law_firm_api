@@ -1,14 +1,18 @@
+from config.database import Base
 from sqlalchemy import Column, DefaultClause, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.orm import relationship
-
-from config.database import Base
 
 
 class Client(Base):
     __tablename__ = "client"
 
-    id = Column(Integer, server_default=DefaultClause("nextval('client_id_seq'::regclass)"), primary_key=True, index=True, nullable=False)
+    id = Column(
+        Integer,
+        server_default=DefaultClause("nextval('client_id_seq'::regclass)"),
+        primary_key=True,
+        index=True,
+        nullable=False,
+    )
     name = Column(String, unique=True, nullable=False)
     addresses = Column(ARRAY(String))
     phones = Column(ARRAY(String))
@@ -16,11 +20,17 @@ class Client(Base):
     observation = Column(String)
     cpf = Column(String, unique=True)
     cnpj = Column(String, unique=True)
-    status_id = Column(Integer, ForeignKey('client_status.id'), default=1, nullable=False)
+    status_id = Column(Integer, ForeignKey("client_status.id"), default=1, nullable=False)
 
 
 class ClientStatus(Base):
     __tablename__ = "client_status"
 
-    id = Column(Integer, server_default=DefaultClause("nextval('client_status_id_seq'::regclass)"), primary_key=True, index=True, nullable=False)
+    id = Column(
+        Integer,
+        server_default=DefaultClause("nextval('client_status_id_seq'::regclass)"),
+        primary_key=True,
+        index=True,
+        nullable=False,
+    )
     description = Column(String, unique=True, nullable=False)
