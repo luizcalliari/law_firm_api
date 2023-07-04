@@ -1,4 +1,5 @@
 from config.database import Base
+from pydantic import BaseModel
 from sqlalchemy import Column, DefaultClause, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY
 
@@ -20,7 +21,9 @@ class Client(Base):
     observation = Column(String)
     cpf = Column(String, unique=True)
     cnpj = Column(String, unique=True)
-    status_id = Column(Integer, ForeignKey("client_status.id"), default=1, nullable=False)
+    status_id = Column(
+        Integer, ForeignKey("client_status.id"), default=1, nullable=False
+    )
 
 
 class ClientStatus(Base):
@@ -34,3 +37,14 @@ class ClientStatus(Base):
         nullable=False,
     )
     description = Column(String, unique=True, nullable=False)
+
+
+class ClientResponse(BaseModel):
+    name: str
+    addresses: list | None
+    emails: list | None
+    observation: str | None
+    cpf: str | None
+
+    class Config:
+        orm_mode = True

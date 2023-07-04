@@ -1,4 +1,4 @@
-from client.model import Client, ClientStatus
+from client.model import Client, ClientResponse, ClientStatus
 from config.database import get_db
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -6,8 +6,16 @@ from sqlalchemy.orm import Session
 router = APIRouter()
 
 
-@router.get("/client")
-async def get_client(id=None, db: Session = Depends(get_db)):
-    id = 1
-    teste = db.query(Client).filter(Client.id == id).first()
-    return {"message": "deu boa"}
+@router.get("/client/{client_id}", response_model=list[ClientResponse])
+@router.get("/client", response_model=list[ClientResponse])
+async def get_client(
+    client_id: int | None = None, db: Session = Depends(get_db)
+) -> list:
+    clients = db.query(Client).with_entities(
+        Client.name, Client.addresses, Client.emails, Client.observation, Client.cpf
+    )
+
+    if client_id:
+        clients = clients.filter(Client.id == client_id)
+
+    return clients.all()
