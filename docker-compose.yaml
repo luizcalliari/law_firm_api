@@ -6,7 +6,7 @@ services:
     container_name: lf_psql
     network_mode: bridge
     ports:
-      - 127.0.0.1:5442:5432
+      - 5442:5432
     volumes:
       - ./dbs/lf_psql:/var/lib/postgresql
     environment:
@@ -14,7 +14,9 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_TABLE}
   lf_api:
-    image: lf_api
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: lf_api
     network_mode: bridge
     volumes:
@@ -31,4 +33,4 @@ services:
       - 8000:8000
     links:
       - lf_psql
-    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
