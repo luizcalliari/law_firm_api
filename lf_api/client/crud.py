@@ -17,10 +17,21 @@ async def get_client(
         client_id (Optional[int]): id of the client.
 
     Returns:
-         Name, addresses, emails, observation and cpf from the client.
+         Name, addresses, emails, observation and cpf, cnpj and status from the
+         client.
     """
-    clients = db.query(Client).with_entities(
-        Client.name, Client.addresses, Client.emails, Client.observation, Client.cpf
+    clients = (
+        db.query(Client)
+        .with_entities(
+            Client.name,
+            Client.addresses,
+            Client.emails,
+            Client.observation,
+            Client.cpf,
+            Client.cnpj,
+            ClientStatus.description.label("status"),
+        )
+        .join(ClientStatus, Client.status_id == ClientStatus.id)
     )
 
     if client_id:

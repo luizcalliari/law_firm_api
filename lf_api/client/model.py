@@ -31,7 +31,9 @@ class ClientStatus(Base):
 
     id = Column(
         Integer,
-        server_default=DefaultClause("nextval('client_status_id_seq'::regclass)"),
+        server_default=DefaultClause(
+            "nextval('client_status_id_seq'::regclass)"
+        ),
         primary_key=True,
         index=True,
         nullable=False,
@@ -45,6 +47,8 @@ class ClientResponse(BaseModel):
     emails: list | None
     observation: str | None
     cpf: str | None
+    cnpj: str | None
+    status: str
 
     class Config:
         orm_mode = True
