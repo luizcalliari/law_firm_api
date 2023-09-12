@@ -1,6 +1,9 @@
+from http import HTTPStatus
+
 from client.model import Client, ClientResponse, ClientStatus, ClientUpdate
 from config.database import get_db
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 router = APIRouter()
@@ -62,17 +65,26 @@ async def put_client(
         client_data["status_id"] = (
             db.query(ClientStatus)
             .filter(ClientStatus.description == client_status_description)
-            .first()
-            .id
+            .with_entities(ClientStatus.id)
+            .as_scalar()
         )
 
         client = (
             db.query(Client).filter(Client.id == client_id).update(client_data)
         )
         db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
+            detail="Invalid input data.",
+        )
     except Exception:
         db.rollback()
-        raise
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+        )
 
     client = (
         db.query(Client)
