@@ -103,3 +103,62 @@ async def put_client(
     )
 
     return client
+
+
+@router.post("/client", response_model=ClientResponse)
+async def post_client(
+    client_data: ClientUpdate, db: Session = Depends(get_db)
+) -> list:
+    """Add new client.
+
+    Returns:
+         Name, addresses, emails, observation and cpf, cnpj and status from the
+         client.
+    """
+    try:
+        client_data = client_data.dict()
+
+        client_status_description = client_data["status"]
+        del client_data["status"]
+
+        client_data["status_id"] = (
+            db.query(ClientStatus)
+            .filter(ClientStatus.description == client_status_description)
+            .with_entities(ClientStatus.id)
+            .one()
+            .id
+        )
+
+        client = Client(**client_data)
+        db.add(client)
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
+            detail="Invalid input data.",
+        )
+    except Exception:
+        db.rollback()
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+        )
+
+    client = (
+        db.query(Client)
+        .with_entities(
+            Client.name,
+            Client.addresses,
+            Client.emails,
+            Client.observation,
+            Client.cpf,
+            Client.cnpj,
+            ClientStatus.description.label("status"),
+        )
+        .join(ClientStatus, Client.status_id == ClientStatus.id)
+        .filter(Client.id == client.id)
+        .first()
+    )
+
+    return client

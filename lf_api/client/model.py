@@ -27,6 +27,26 @@ class Client(Base):
     )
     status = relationship("ClientStatus")
 
+    def __init__(
+        self,
+        name,
+        addresses,
+        phones,
+        emails,
+        observation,
+        cpf,
+        cnpj,
+        status_id,
+    ):
+        self.name = name
+        self.addresses = addresses
+        self.phones = phones
+        self.emails = emails
+        self.observation = observation
+        self.cpf = cpf
+        self.cnpj = cnpj
+        self.status_id = status_id
+
 
 class ClientStatus(Base):
     __tablename__ = "client_status"
@@ -60,6 +80,7 @@ class ClientUpdate(BaseModel):
     name: str
     addresses: list | None
     emails: list | None
+    phones: list | None
     observation: str | None
     cpf: str | None
     cnpj: str | None
